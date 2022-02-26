@@ -3,21 +3,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace The_firstapi.Controllers
 {
-    [Route("CrudWheather")]
     [ApiController]
+    [Route("CrudWheather")]
     public class CrudWheatherController : ControllerBase
     {
-        private readonly WeatherForecastHolder _holder;
-        private readonly WeatherForecastController _weather;
-       
-        public CrudWheatherController(WeatherForecastHolder holder)
-        {
-            _holder = holder;
-        }
+        private readonly WeatherForecastHolder _holder=new WeatherForecastHolder();
+        private readonly WeatherForecastController _weather=new WeatherForecastController();
         private readonly ILogger<CrudWheatherController> _logger;
+        public CrudWheatherController(ILogger<CrudWheatherController> logger)
+        {
+            _logger = logger;
+        }
+        
 
-        [HttpPost("CrudWheather/SaveTemp")]
-        /// <summary>Возможность сохранить температуру в указанное время</summary>
+        [HttpPost,Route("SaveTemp")]
         public IActionResult SaveTemp()
         { 
             foreach (var item in _weather.Get())
@@ -27,16 +26,13 @@ namespace The_firstapi.Controllers
             return Ok();
         }
         
-        [HttpGet("CrudWheather/read")]
-        /// <summary>Возможность прочитать список показателей температуры за указанный промежуток времени</summary>
+        [HttpGet,Route("read")]
         public IActionResult Read([FromQuery] int days)
         {
-            return Ok(Enumerable.Range(1, days).Select(index => _holder._weathers)
-             .ToArray());
+            return Ok(Enumerable.Range(1, days).Select(index => _holder._weathers).ToArray());
         }
 
-        [HttpPut("CrudWheather/update")]
-        /// <summary>Возможность отредактировать показатель температуры в указанное время</summary>
+        [HttpPut,Route("update")]
         public IActionResult Update([FromQuery] DateTime dateTime, [FromQuery] int temp)
         {
             foreach (var item in _holder._weathers)
@@ -54,8 +50,7 @@ namespace The_firstapi.Controllers
             return _holder;
         }
 
-        [HttpDelete("CrudWheather/delete")]
-        /// <summary>Возможность удалить показатель температуры в указанный промежуток времени.</summary>
+        [HttpDelete,Route("delete")]
         public IActionResult Delete([FromQuery] int days)
         {
             for (int i = 0; i < days; i++)

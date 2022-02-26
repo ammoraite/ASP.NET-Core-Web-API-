@@ -2,7 +2,7 @@
 
 public class WeatherForecastHolder
 {
-    public List<WeatherForecast> _weathers;
+    public List<WeatherForecast> _weathers=new List<WeatherForecast>();
 
     public void Add(WeatherForecast weatherForAdd)
     {

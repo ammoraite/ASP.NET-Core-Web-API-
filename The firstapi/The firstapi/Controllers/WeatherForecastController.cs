@@ -17,6 +17,10 @@ namespace The_firstapi.Controllers
         {
             _logger = logger;
         }
+        public WeatherForecastController()
+        {
+
+        }
 
         [HttpGet,Route("Weather")]
         public IEnumerable<WeatherForecast> Get()
