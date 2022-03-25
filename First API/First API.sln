@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "First API", "First API\First API.csproj", "{EE601975-AD2B-4F32-9659-013EA96976A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsMaagerTests", "MetricsMaagerTests\MetricsMaagerTests.csproj", "{2D2F5DE5-262E-4D44-B600-ECC940FCE59A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsManagerTests", "MetricsMaagerTests\MetricsManagerTests.csproj", "{2D2F5DE5-262E-4D44-B600-ECC940FCE59A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
