@@ -14,6 +14,7 @@ namespace First_API
     {
         public static void Main(string[] args)
         {
+            
             var logger =NLogBuilder.ConfigureNLog("nlog.config.xml").GetCurrentClassLogger();
             try
             {

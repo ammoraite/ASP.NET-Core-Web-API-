@@ -55,18 +55,19 @@ namespace First_API.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class NetworkMetricsController : ControllerBase
+    public class HddMetricsController : ControllerBase
     {
-        private readonly INetworkMetricsRepository repository;
-        private readonly ILogger<NetworkMetricsController> logger;
-        public static readonly string NameMetrics= "NetworkMetrics";
-        public NetworkMetricsController(INetworkMetricsRepository repository, ILogger<NetworkMetricsController> logger)
+        private readonly IHddMetricsRepository repository;
+        private readonly ILogger<HddMetricsController> logger;
+        public static readonly string NameMetrics= "HddMetrics";
+        public HddMetricsController(IHddMetricsRepository repository, ILogger<HddMetricsController> logger)
         {
             this.repository = repository;
             this.logger = logger;
-            logger.LogDebug(1, $"NLog встроен в {NameMetrics}Controller");
+            logger.LogDebug(1, "NLog встроен в HddMetricsController");
         }
-        public NetworkMetricsController(NetworkMetricsController @object)
+
+        public HddMetricsController(HddMetricsController @object)
         {
             logger.LogDebug(1, $"Запуск теста в {NameMetrics}Controller");
             repository = @object.repository;
@@ -166,30 +167,30 @@ namespace First_API.Controllers
         //    }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
+        public IActionResult Create([FromBody] HddMetricCreateRequest request)
         {
 
-            repository.Create(new NetworkMetric
+            repository.Create(new HddMetric
             {
                 Time = request.Time,
                 Value = request.Value,
                 Name = NameMetrics
             }, NameMetrics) ;
 
-            logger.LogDebug(1, $"Добавлена {NameMetrics}Metric: {request.Name}") ;
+            logger.LogDebug(1, $"Добавлена HddMetric: {request.Name}") ;
             return Ok();
         }
         [HttpGet("all")]
         public IActionResult GetAll()
         {
             var metrics = repository.GetAll(NameMetrics);
-            var response = new AllNetworkMetricsResponse()
+            var response = new AllHddMetricsResponse()
             {
-                Metrics = new List<NetworkMetricDto>()
+                Metrics = new List<HddMetricDto>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new NetworkMetricDto
+                response.Metrics.Add(new HddMetricDto
                 {
                     Id = metric.Id,
                     Name = metric.Name,
@@ -197,7 +198,7 @@ namespace First_API.Controllers
                     Time = TimeSpan.FromSeconds(metric.Time),
                 });
             }
-            logger.LogDebug(1, $"Отправлены все {NameMetrics}Metric в {NameMetrics}");
+            logger.LogDebug(1, $"Отправлены все HddMetric в {NameMetrics}");
             return Ok(response);
         }
     }
