@@ -2,12 +2,12 @@
 
 namespace First_API.Interfaces
 {
-    public interface IRepository <T> where T : class
+    public interface IRepository <T>
     {
         IList<T> GetAll(string nameMetric);
-        T GetById(int id, string NameMetric);
-        void Create(T item,string nameMetric);
-        void Update(T item, string NameMetric);
+        IMetric GetById(int id, string NameMetric);
+        void Create(IMetric item,string nameMetric);
+        void Update(IMetric item, string NameMetric);
         void Delete(int id, string NameMetric);
     }
 }

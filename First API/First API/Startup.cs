@@ -1,5 +1,10 @@
+using AutoMapper;
+using Core.Interfaces;
 using First_API.Controllers;
-using First_API.Interfaces.ForTest;
+using First_API.DAL.BaseModuls.HardwareBaseModules;
+using First_API.DAL.MetricsModules;
+using First_API.Interfaces;
+using First_API.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,15 +26,25 @@ namespace First_API
         //services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+
+            var mapper = mapperConfiguration.CreateMapper();
+
             ConfigureSqlLiteConnection();
-            services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
-            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
-            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
-            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
-            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
+
+            services.AddControllers();
+                   
+            services.AddSingleton(mapper);
+
+            services.AddScoped<IRepositoryesBase, RepositoryCpuMetrics>();
+            services.AddScoped<IRepositoryesBase, RepositoryDotnetMetrics>();
+            services.AddScoped<IRepositoryesBase, RepositoryHddMetrics>();
+            services.AddScoped<IRepositoryesBase, RepositoryNetworkMetrics>();
+            services.AddScoped<IRepositoryesBase, RepositoryRamMetrics>();
         }
-            
+
+
+
         private static void ConfigureSqlLiteConnection()
         {
             const string connectionString = "DataSource = metrics.db; Version = 3; Pooling = true; Max Pool Size = 1000; ";
