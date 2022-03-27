@@ -9,21 +9,21 @@ namespace First_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NetworkMetricsController : ControllerBase, IMetricController
+    public class HddMetricsController : ControllerBase, IMetricController
     {
 
         private readonly IRepositoryesBase repository;
 
-        private readonly ILogger<NetworkMetricsController> logger;
+        private readonly ILogger<HddMetricsController> logger;
 
         private readonly IMapper mapper;
 
-        public readonly static string NameMetrics = "NetworkMetrics";
+        public readonly static string NameMetrics = "HddMetrics";
 
         private readonly ControllerBaseWorker controllerBaseWorker;
 
 
-        public NetworkMetricsController(IRepositoryesBase repository, ILogger<NetworkMetricsController> logger, IMapper mapper)
+        public HddMetricsController(IRepositoryesBase repository, ILogger<HddMetricsController> logger, IMapper mapper)
         {
             controllerBaseWorker = new ControllerBaseWorker(repository, mapper, logger, NameMetrics);
             this.mapper = mapper;
@@ -33,7 +33,7 @@ namespace First_API.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] RequestNetworkMetricCreate request)
+        public IActionResult Create([FromBody] RequestHddMetricCreate request)
         {
             controllerBaseWorker.AddMetricFromRequest(request);
             logger.LogDebug(1, $"Добавлена CpuMetric: {request.Name}");
