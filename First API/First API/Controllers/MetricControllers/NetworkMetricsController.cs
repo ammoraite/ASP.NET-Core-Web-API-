@@ -1,4 +1,5 @@
-﻿using First_API.Interfaces.ForTest;
+﻿using AutoMapper;
+using First_API.Interfaces.ForTest;
 using First_API.Requests;
 using First_API.Responses;
 using First_API.SQLmetricitem;
@@ -66,12 +67,7 @@ namespace First_API.Controllers
             this.logger = logger;
             logger.LogDebug(1, $"NLog встроен в {NameMetrics}Controller");
         }
-        public NetworkMetricsController(NetworkMetricsController @object)
-        {
-            logger.LogDebug(1, $"Запуск теста в {NameMetrics}Controller");
-            repository = @object.repository;
-            logger = @object.logger;
-        }
+        
 
         //    [HttpGet("sql-read-write-test")]
         //    public IActionResult TryToInsertAndRead()
@@ -171,7 +167,7 @@ namespace First_API.Controllers
 
             repository.Create(new NetworkMetric
             {
-                Time = request.Time,
+                Time = TimeSpan.FromSeconds(request.Time),
                 Value = request.Value,
                 Name = NameMetrics
             }, NameMetrics) ;
@@ -182,22 +178,24 @@ namespace First_API.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = repository.GetAll(NameMetrics);
+            // Задаём конфигурацию для маппера. Первый обобщённый параметр — тип объекта
+            //источника, второй — тип объекта, в который перетекут данные из источника
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<NetworkMetric, NetworkMetricDto>());
+
+            var mapper = config.CreateMapper();
+
+            IList<NetworkMetric> metrics = repository.GetAll(NameMetrics);
+
             var response = new AllNetworkMetricsResponse()
             {
                 Metrics = new List<NetworkMetricDto>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new NetworkMetricDto
-                {
-                    Id = metric.Id,
-                    Name = metric.Name,
-                     Value = metric.Value,
-                    Time = TimeSpan.FromSeconds(metric.Time),
-                });
+                // Добавляем объекты в ответ, используя маппер
+                response.Metrics.Add(mapper.Map<NetworkMetricDto>(metric));
             }
-            logger.LogDebug(1, $"Отправлены все {NameMetrics}Metric в {NameMetrics}");
+            logger.LogDebug(1, $"Отправлены все NetworkMetric в {NameMetrics}");
             return Ok(response);
         }
     }

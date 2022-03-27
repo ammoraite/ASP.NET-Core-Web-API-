@@ -1,11 +1,10 @@
-﻿using First_API.Interfaces;
+﻿using AutoMapper;
 using First_API.Interfaces.ForTest;
 using First_API.Requests;
 using First_API.Responses;
 using First_API.SQLmetricitem;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NLog;
 using System;
 using System.Collections.Generic;
 
@@ -27,9 +26,9 @@ namespace First_API.Controllers
 
 
 
-    
 
-    
+
+
 
     //    [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
     //    public IActionResult GetMetricsFromAgent
@@ -67,10 +66,7 @@ namespace First_API.Controllers
             this.logger = logger;
             logger.LogDebug(1, $"NLog встроен в {NameMetrics}Controller");
         } 
-        public CpuMetricsController()
-        {
-           
-        }
+       
 
         //    [HttpGet("sql-read-write-test")]
         //    public IActionResult TryToInsertAndRead()
@@ -170,7 +166,7 @@ namespace First_API.Controllers
 
             repository.Create(new CpuMetric
             {
-                Time = request.Time,
+                Time = TimeSpan.FromSeconds( request.Time),
                 Value = request.Value,
                 Name = NameMetrics
             }, NameMetrics) ;
@@ -180,21 +176,23 @@ namespace First_API.Controllers
         }
         [HttpGet("all")]
         public IActionResult GetAll()
-        {
-            var metrics = repository.GetAll(NameMetrics);
+        {            
+            // Задаём конфигурацию для маппера. Первый обобщённый параметр — тип объекта
+            //источника, второй — тип объекта, в который перетекут данные из источника
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<CpuMetric,CpuMetricDto>());
+
+            var mapper = config.CreateMapper();
+
+            IList<CpuMetric> metrics = repository.GetAll(NameMetrics);
+
             var response = new AllCpuMetricsResponse()
             {
                 Metrics = new List<CpuMetricDto>()
             };
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new CpuMetricDto
-                {
-                    Id = metric.Id,
-                    Name = metric.Name,
-                     Value = metric.Value,
-                    Time = TimeSpan.FromSeconds(metric.Time),
-                });
+                // Добавляем объекты в ответ, используя маппер
+                response.Metrics.Add(mapper.Map<CpuMetricDto>(metric));
             }
             logger.LogDebug(1, $"Отправлены все CpuMetric в {NameMetrics}");
             return Ok(response);
