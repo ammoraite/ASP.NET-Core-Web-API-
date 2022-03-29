@@ -1,10 +1,5 @@
-using AutoMapper;
-using Core.Interfaces;
 using First_API.Controllers;
-using First_API.DAL.BaseModuls.HardwareBaseModules;
-using First_API.DAL.MetricsModules;
-using First_API.Interfaces;
-using First_API.Mappers;
+using First_API.Interfaces.ForTest;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +28,7 @@ namespace First_API
             ConfigureSqlLiteConnection();
 
             services.AddControllers();
+<<<<<<< HEAD
                    
             services.AddSingleton(mapper);
 
@@ -45,6 +41,21 @@ namespace First_API
 
 
 
+        private static void ConfigureSqlLiteConnection()
+        {
+            const string connectionString = "DataSource = metrics.db; Version = 3; Pooling = true; Max Pool Size = 1000; ";
+            var connection = new SQLiteConnection(connectionString);
+            connection.Open();
+            PrepareSchema(connection);
+=======
+            ConfigureSqlLiteConnection();
+            services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
+            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
+            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
+            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
+        }
+            
         private static void ConfigureSqlLiteConnection()
         {
             const string connectionString = "DataSource = metrics.db; Version = 3; Pooling = true; Max Pool Size = 1000; ";
@@ -76,8 +87,37 @@ namespace First_API
             }
            
             
+>>>>>>> parent of d3769de... HW5
+        }
+        private static void PrepareSchema(SQLiteConnection connection)
+        {
+            using var command = new SQLiteCommand(connection);
+
+<<<<<<< HEAD
+            List<string> NameMetric = new()
+            {
+                DotNetMetricsController.NameMetrics,
+                CpuMetricsController.NameMetrics,
+                HddMetricsController.NameMetrics,
+                NetworkMetricsController.NameMetrics,
+                RamMetricsController.NameMetrics
+            };
+            // Задаём новый текст команды для выполнения
+            // Удаляем таблицу с метриками, если она есть в базе данных
+            foreach (var item in NameMetric)
+            {
+                command.CommandText = @$"DROP TABLE IF EXISTS {item}";
+                // Отправляем запрос в базу данных
+                command.ExecuteNonQuery();
+                command.CommandText = @$"CREATE TABLE {item}(id INTEGER PRIMARY KEY,name TEXT,value INT, time INT)";
+                command.ExecuteNonQuery();
+            }
+           
+            
         }
 
+=======
+>>>>>>> parent of d3769de... HW5
         // This method gets called by the runtime. Use this method toconfigure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

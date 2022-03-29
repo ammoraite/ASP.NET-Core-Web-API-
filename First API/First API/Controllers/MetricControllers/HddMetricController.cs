@@ -56,17 +56,18 @@ namespace First_API.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class NetworkMetricsController : ControllerBase
+    public class HddMetricsController : ControllerBase
     {
-        private readonly INetworkMetricsRepository repository;
-        private readonly ILogger<NetworkMetricsController> logger;
-        public static readonly string NameMetrics= "NetworkMetrics";
-        public NetworkMetricsController(INetworkMetricsRepository repository, ILogger<NetworkMetricsController> logger)
+        private readonly IHddMetricsRepository repository;
+        private readonly ILogger<HddMetricsController> logger;
+        public static readonly string NameMetrics= "HddMetrics";
+        public HddMetricsController(IHddMetricsRepository repository, ILogger<HddMetricsController> logger)
         {
             this.repository = repository;
             this.logger = logger;
-            logger.LogDebug(1, $"NLog встроен в {NameMetrics}Controller");
+            logger.LogDebug(1, "NLog встроен в HddMetricsController");
         }
+
         
 
         //    [HttpGet("sql-read-write-test")]
@@ -162,17 +163,17 @@ namespace First_API.Controllers
         //    }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
+        public IActionResult Create([FromBody] HddMetricCreateRequest request)
         {
 
-            repository.Create(new NetworkMetric
+            repository.Create(new HddMetric
             {
                 Time = TimeSpan.FromSeconds(request.Time),
                 Value = request.Value,
                 Name = NameMetrics
             }, NameMetrics) ;
 
-            logger.LogDebug(1, $"Добавлена {NameMetrics}Metric: {request.Name}") ;
+            logger.LogDebug(1, $"Добавлена HddMetric: {request.Name}") ;
             return Ok();
         }
         [HttpGet("all")]
@@ -180,22 +181,22 @@ namespace First_API.Controllers
         {
             // Задаём конфигурацию для маппера. Первый обобщённый параметр — тип объекта
             //источника, второй — тип объекта, в который перетекут данные из источника
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<NetworkMetric, NetworkMetricDto>());
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<HddMetric, HddMetricDto>());
 
             var mapper = config.CreateMapper();
 
-            IList<NetworkMetric> metrics = repository.GetAll(NameMetrics);
+            IList<HddMetric> metrics = repository.GetAll(NameMetrics);
 
-            var response = new AllNetworkMetricsResponse()
+            var response = new AllHddMetricsResponse()
             {
-                Metrics = new List<NetworkMetricDto>()
+                Metrics = new List<HddMetricDto>()
             };
             foreach (var metric in metrics)
             {
                 // Добавляем объекты в ответ, используя маппер
-                response.Metrics.Add(mapper.Map<NetworkMetricDto>(metric));
+                response.Metrics.Add(mapper.Map<HddMetricDto>(metric));
             }
-            logger.LogDebug(1, $"Отправлены все NetworkMetric в {NameMetrics}");
+            logger.LogDebug(1, $"Отправлены все HddMetric в {NameMetrics}");
             return Ok(response);
         }
     }
