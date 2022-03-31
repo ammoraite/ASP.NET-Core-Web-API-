@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using Core.Interfaces;
 using First_API.Controllers.MetricControllers;
-using First_API.DAL.RequestsModules;
+using First_API.DAL.BaseModuls;
+using First_API.DTO.Requests;
+using First_API.Services.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,42 +12,33 @@ namespace First_API.Controllers
     [ApiController]
     public class HddMetricsController : ControllerBase, IMetricController
     {
-
-        private readonly IRepositoryesBase repository;
-
         private readonly ILogger<HddMetricsController> logger;
-
-        private readonly IMapper mapper;
-
-        public readonly static string NameMetrics = "HddMetrics";
 
         private readonly ControllerBaseWorker controllerBaseWorker;
 
+        private const string NameMetric = "HddNetMetric";
 
-        public HddMetricsController(IRepositoryesBase repository, ILogger<HddMetricsController> logger, IMapper mapper)
+        public HddMetricsController(IRepositoryMetrics<Metric> repository, ILogger<HddMetricsController> logger, IMapper mapper)
         {
-            controllerBaseWorker = new ControllerBaseWorker(repository, mapper, logger, NameMetrics);
-            this.mapper = mapper;
-            this.repository = repository;
+            controllerBaseWorker = new ControllerBaseWorker(repository, mapper, logger, NameMetric);
             this.logger = logger;
-            logger.LogDebug(1, $"NLog встроен в {NameMetrics}Controller");
+            logger.LogDebug(1, $"NLog встроен в HddMetricController");
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] RequestHddMetricCreate request)
+        public IActionResult Create([FromBody] HddRequestMetricCreate request)
         {
+
             controllerBaseWorker.AddMetricFromRequest(request);
-            logger.LogDebug(1, $"Добавлена CpuMetric: {request.Name}");
+            logger.LogDebug(1, $"Добавлена HddMetric");
             return Ok();
         }
 
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            logger.LogDebug(1, $"Отправлены все CpuMetric в {NameMetrics}");
+            logger.LogDebug(1, $"Отправлены все HddMetric");
             return Ok(controllerBaseWorker.GetAllmetric());
         }
     }
 }
-
-

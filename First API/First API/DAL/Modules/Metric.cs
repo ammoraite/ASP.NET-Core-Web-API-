@@ -1,11 +1,9 @@
-﻿
-
-using First_API.Interfaces;
+﻿using First_API.Interfaces;
 using System;
 
 namespace First_API.DAL.BaseModuls
 {
-    public class MetricBase:IMetric
+    public class Metric:IMetric
     {
         public string Name { get; set; }
         public int Id { get; set; }

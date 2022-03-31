@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace First_API.Responses
 {
-    public class ResponseAllMetricsBase : IAllMetricsResponse<MetricBase>
+    public class ResponseAllMetrics : IAllMetricsResponse<DtoMetric>
     {
-        public List<MetricBase> Metrics { get; set; }
+        public List<DtoMetric> Metrics { get; set; }
     }
 
 }

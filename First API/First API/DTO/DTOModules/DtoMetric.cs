@@ -3,7 +3,7 @@ using System;
 
 namespace First_API.DAL.BaseModuls
 {
-    public class DtoMetricBase:IMetricDto
+    public class DtoMetric:IMetricDto
     {
         public string Name { get; set; }
         public int Id { get; set; }
