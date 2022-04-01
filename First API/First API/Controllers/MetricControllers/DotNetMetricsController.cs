@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using First_API.Controllers.MetricControllers;
-using First_API.DAL.BaseModuls;
+using First_API.Controllers.MetricControllers.Base;
+using First_API.DAL.Modules;
 using First_API.DTO.Requests;
-using First_API.Services.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace First_API.Controllers
 {
@@ -13,28 +14,23 @@ namespace First_API.Controllers
     public class DotNetMetricsController : ControllerBase, IMetricController
     {
 
-        
-
         private readonly ILogger<DotNetMetricsController> logger;
 
-        
+        private readonly ControllerBaseWorker<DotNetMetric> controllerBaseWorker;
 
-        private readonly ControllerBaseWorker controllerBaseWorker;
-
-        private const string NameMetric = "DotNetMetric";
-
-        public DotNetMetricsController(IRepositoryMetrics<Metric> repository, ILogger<DotNetMetricsController> logger, IMapper mapper)
+        public DotNetMetricsController(IDotNetMetricRepository repository, ILogger<DotNetMetricsController> logger, IMapper mapper)
         {
-            controllerBaseWorker = new ControllerBaseWorker(repository, mapper, logger, NameMetric);
+            controllerBaseWorker = new ControllerBaseWorker<DotNetMetric>(repository, mapper, logger);
             this.logger = logger;
             logger.LogDebug(1, $"NLog встроен в DotNetMetricController");
         }
 
+
         [HttpPost("create")]
         public IActionResult Create([FromBody] DotNetRequestMetricCreate request)
         {
-
-            controllerBaseWorker.AddMetricFromRequest(request);
+            DotNetMetric DotNetMetric = new DotNetMetric();
+            controllerBaseWorker.AddMetricFromRequest(request, DotNetMetric);
             logger.LogDebug(1, $"Добавлена DotNetMetric");
             return Ok();
         }
@@ -45,10 +41,18 @@ namespace First_API.Controllers
             logger.LogDebug(1, $"Отправлены все DotNetMetric");
             return Ok(controllerBaseWorker.GetAllmetric());
         }
+        [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetDotNetMetricsFromAllCluster
+        (
+            [FromRoute] TimeSpan fromTime,
+            [FromRoute] TimeSpan toTime
+        )
+        {
+            return Ok(controllerBaseWorker.GetAllmetricToTime(fromTime, toTime));
+        }
     }
+
+
 }
-
-
-
 
 

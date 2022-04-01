@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using First_API.Controllers.MetricControllers;
-using First_API.DAL.BaseModuls;
+using First_API.Controllers.MetricControllers.Base;
+using First_API.DAL.Modules;
 using First_API.DTO.Requests;
-using First_API.Services.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -15,15 +16,11 @@ namespace First_API.Controllers
 
         private readonly ILogger<CpuMetricsController> logger;
 
-        private readonly ControllerBaseWorker controllerBaseWorker;
+        private readonly ControllerBaseWorker<CpuMetric> controllerBaseWorker;
 
-        private const string NameMetric = "CpuMetric";
-
-       
-
-        public CpuMetricsController(IRepositoryMetrics<Metric> repository, ILogger<CpuMetricsController> logger, IMapper mapper)
+        public CpuMetricsController(ICpuMetricRepository repository, ILogger<CpuMetricsController> logger, IMapper mapper)
         {
-            controllerBaseWorker = new ControllerBaseWorker(repository, mapper, logger, NameMetric);
+            controllerBaseWorker = new ControllerBaseWorker<CpuMetric>(repository, mapper, logger);
             this.logger = logger;
             logger.LogDebug(1, $"NLog встроен в CpuMetricController");
         }
@@ -32,8 +29,8 @@ namespace First_API.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] CpuRequestMetricCreate request)
         {
-
-            controllerBaseWorker.AddMetricFromRequest(request);
+            CpuMetric cpuMetric = new CpuMetric();
+            controllerBaseWorker.AddMetricFromRequest(request, cpuMetric);
             logger.LogDebug(1, $"Добавлена CpuMetric");
             return Ok();
         }
@@ -44,7 +41,18 @@ namespace First_API.Controllers
             logger.LogDebug(1, $"Отправлены все CpuMetric");
             return Ok(controllerBaseWorker.GetAllmetric());
         }
+        [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetCpuMetricsFromAllCluster
+                (
+                [FromRoute] TimeSpan fromTime,
+                [FromRoute] TimeSpan toTime
+                )
+        {
+            return Ok(controllerBaseWorker.GetAllmetricToTime(fromTime, toTime));
+        }
     }
+
+
 }
 
 

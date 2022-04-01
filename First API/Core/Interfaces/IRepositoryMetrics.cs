@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using First_API.Interfaces;
+using System.Collections.Generic;
 
 
 namespace First_API.Services.Repositories
 {
-    public interface IRepositoryMetrics<T>
+    public interface IRepositoryMetrics<T> where T : IMetric
     {
         IList<T> GetAll();
         T GetById(int id);

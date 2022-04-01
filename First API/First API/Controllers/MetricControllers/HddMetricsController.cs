@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using First_API.Controllers.MetricControllers;
-using First_API.DAL.BaseModuls;
+using First_API.Controllers.MetricControllers.Base;
+using First_API.DAL.Modules;
 using First_API.DTO.Requests;
-using First_API.Services.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,24 +13,24 @@ namespace First_API.Controllers
     [ApiController]
     public class HddMetricsController : ControllerBase, IMetricController
     {
+
         private readonly ILogger<HddMetricsController> logger;
 
-        private readonly ControllerBaseWorker controllerBaseWorker;
+        private readonly ControllerBaseWorker<HddMetric> controllerBaseWorker;
 
-        private const string NameMetric = "HddNetMetric";
-
-        public HddMetricsController(IRepositoryMetrics<Metric> repository, ILogger<HddMetricsController> logger, IMapper mapper)
+        public HddMetricsController(IHddMetricRepository repository, ILogger<HddMetricsController> logger, IMapper mapper)
         {
-            controllerBaseWorker = new ControllerBaseWorker(repository, mapper, logger, NameMetric);
+            controllerBaseWorker = new ControllerBaseWorker<HddMetric>(repository, mapper, logger);
             this.logger = logger;
             logger.LogDebug(1, $"NLog встроен в HddMetricController");
         }
 
+
         [HttpPost("create")]
         public IActionResult Create([FromBody] HddRequestMetricCreate request)
         {
-
-            controllerBaseWorker.AddMetricFromRequest(request);
+            HddMetric HddMetric = new HddMetric();
+            controllerBaseWorker.AddMetricFromRequest(request, HddMetric);
             logger.LogDebug(1, $"Добавлена HddMetric");
             return Ok();
         }
@@ -40,5 +41,19 @@ namespace First_API.Controllers
             logger.LogDebug(1, $"Отправлены все HddMetric");
             return Ok(controllerBaseWorker.GetAllmetric());
         }
+
+        [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetHddMetricsFromAllCluster
+        (
+            [FromRoute] TimeSpan fromTime,
+            [FromRoute] TimeSpan toTime
+        )
+        {
+            return Ok(controllerBaseWorker.GetAllmetricToTime(fromTime, toTime));
+        }
     }
+
+
 }
+
+

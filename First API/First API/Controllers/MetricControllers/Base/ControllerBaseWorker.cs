@@ -1,64 +1,64 @@
 ﻿using AutoMapper;
 using First_API.DAL.BaseModuls;
 using First_API.Interfaces;
-using First_API.Requests;
 using First_API.Responses;
+using First_API.Services.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using First_API.Services.Repositories;
 
 namespace First_API.Controllers.MetricControllers
 {
-    public class ControllerBaseWorker
+    public class ControllerBaseWorker<T> where T : IMetric
     {
-        private IRepositoryMetrics<Metric> repository;
+        private IRepositoryMetrics<T> repository;
         private readonly IMapper mapper;
 
-        private readonly string _nameMetricFromController;
+
 
         public ControllerBaseWorker(
-                IRepositoryMetrics<Metric> repository,
+                IRepositoryMetrics<T> repository,
                 IMapper mapper,
-                ILogger<IMetricController> logger,string nameMetricFromController)
+                ILogger<IMetricController> logger)
         {
-            this.repository = repository;
-            _nameMetricFromController = nameMetricFromController;
+            this.repository = repository; ;
             this.mapper = mapper;
         }
-        public void AddMetricFromRequest(IMetricCreateRequest request)
+        public void AddMetricFromRequest(IMetricCreateRequest request, T item)
         {
-
-            Metric Mb =new()
-            {
-                Time = TimeSpan.FromSeconds(request.Time),
-                Value = request.Value,
-                Name = _nameMetricFromController
-            };
-
-            repository.Create(Mb);
-
+            item.Value = request.Value;
+            item.Time = TimeSpan.FromSeconds(request.Time);
+            repository.Create(item);
         }
 
 
         public ResponseAllMetrics GetAllmetric()
         {
-           
-          
-
             var response = new ResponseAllMetrics()
             {
                 Metrics = new List<DtoMetric>()
             };
-            foreach (var metric in repository.GetAll().Where(n => n.Name == _nameMetricFromController))
+            foreach (var metric in repository.GetAll())
             {
                 response.Metrics.Add(mapper.Map<DtoMetric>(metric));
-
             }
             return response;
         }
 
+        internal ResponseAllMetrics GetAllmetricToTime(TimeSpan fromTime,TimeSpan toTime)
+        {
+            var response = new ResponseAllMetrics()
+            {
+                Metrics = new List<DtoMetric>()
+            };
+            foreach (var metric in repository.GetAll())
+            {
+                if (metric.Time<= fromTime|| metric.Time>= toTime)
+                {
+                    response.Metrics.Add(mapper.Map<DtoMetric>(metric));
+                }
+            }
+            return response;
+        }
     }
 }
