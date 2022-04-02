@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using First_API.Controllers.MetricControllers.Base;
+using First_API.DAL.Modules;
 using Quartz;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using First_API.DAL.Modules;
 
@@ -14,7 +17,9 @@ namespace MetricsAgent.Jobs
         public DotNetMetricJob(IDotNetMetricRepository repository)
         {
             _repository = repository;
-            _dotNetCounter = new PerformanceCounter(".NET CLR Security", "Total Runtime Checks", "_Global_");
+            _dotNetCounter = new PerformanceCounter(".NET CLR Security",
+                                                    "Total Runtime Checks",
+                                                    "_Global_");
         }
         public Task Execute(IJobExecutionContext context)
         {

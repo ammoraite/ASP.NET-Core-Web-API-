@@ -10,14 +10,14 @@ namespace First_API.Services.Repositories
 
     public class SqlLiteDotNetREpository : IDotNetMetricRepository
     {
-        private const string ConnectionString = "Data Source=HardWareMetrics.db;Version=3;Pooling=true;Max Pool Size=100;";
+        private const string ConnectionString = "Data Source=HardWareMetrics.db;Version=3;";
         // Инжектируем соединение с базой данных в наш репозиторий через конструктор
         private RepositoryMetricWorker<DotNetMetric> repositoryWorker;
         public SqlLiteDotNetREpository()
         {
             SqlMapper.AddTypeHandler(new TimeSpanHandler());
             repositoryWorker = new RepositoryMetricWorker<DotNetMetric>(ConnectionString,
-                DotNetMetricsMigration.NameTableMetric);
+                "DotNetMetric");
         }
         public IList<DotNetMetric> GetAll()
         {

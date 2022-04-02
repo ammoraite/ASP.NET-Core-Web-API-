@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using First_API.Controllers.MetricControllers.Base;
+using First_API.DAL.Modules;
 using Quartz;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using First_API.DAL.Modules;
 
@@ -14,7 +17,9 @@ namespace MetricsAgent.Jobs
         public HddMetricJob(IHddMetricRepository repository)
         {
             _repository = repository;
-            _hddCounter = new PerformanceCounter("PhysicalDisk", "Avg. Disk Bytes/Read", "_Total");
+            _hddCounter = new PerformanceCounter("PhysicalDisk",
+                                                 "Avg. Disk Bytes/Read",
+                                                 "_Total");
         }
         public Task Execute(IJobExecutionContext context)
         {

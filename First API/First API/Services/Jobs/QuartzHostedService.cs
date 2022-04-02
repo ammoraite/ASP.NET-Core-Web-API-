@@ -12,7 +12,11 @@ public class QuartzHostedService : IHostedService
     private readonly IJobFactory _jobFactory;
     private readonly IEnumerable<JobSchedule> _jobSchedules;
     public QuartzHostedService(
-        ICpuMetricRepository repository,
+        ICpuMetricRepository cpurepository,
+        IDotNetMetricRepository dotnetrepository,
+        INetWorkMetricRepository networkrepository,
+        IRumMetricRepository rumrepository,
+        IHddMetricRepository hddrepository,
         ISchedulerFactory schedulerFactory,
         IJobFactory jobFactory,
         IEnumerable<JobSchedule> jobSchedules)

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using First_API.Controllers.MetricControllers.Base;
+using First_API.DAL.Modules;
+using Quartz;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using First_API.Controllers.MetricControllers.Base;
@@ -15,7 +18,7 @@ namespace MetricsAgent.Jobs
         public NetWorkMetricJob(INetWorkMetricRepository repository)
         {
             _repository = repository;
-            _netWorkCounter= new PerformanceCounter("Network Interface",
+            _netWorkCounter = new PerformanceCounter("Network Interface",
                                                     "Bytes Total/sec",
                                                     "Realtek PCIe Gbe Family Controller");
                                                             

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using First_API.Controllers.MetricControllers.Base;
+using First_API.DAL.Modules;
 using Quartz;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using First_API.DAL.Modules;
 
@@ -13,7 +16,9 @@ namespace MetricsAgent.Jobs
         private PerformanceCounter _rumCounter;
         public RumMetricJob(IRumMetricRepository repository)
         {
-            _rumCounter = new PerformanceCounter("NUMA Node Memory", "Available MBytes","_Total");
+            _rumCounter = new PerformanceCounter("NUMA Node Memory",
+                                                 "Available MBytes",
+                                                 "_Total");
             _repository = repository;
         }
         public Task Execute(IJobExecutionContext context)

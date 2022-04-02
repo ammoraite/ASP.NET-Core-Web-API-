@@ -10,14 +10,14 @@ namespace First_API.Services.Repositories
 
     public class SqlLiteNetWorkREpository : INetWorkMetricRepository
     {
-        private const string ConnectionString = "Data Source=HardWareMetrics.db;Version=3;Pooling=true;Max Pool Size=100;";
+        private const string ConnectionString = "Data Source=HardWareMetrics.db;Version=3;";
         // Инжектируем соединение с базой данных в наш репозиторий через конструктор
         private RepositoryMetricWorker<NetWorkMetric> repositoryWorker;
         public SqlLiteNetWorkREpository()
         {
             SqlMapper.AddTypeHandler(new TimeSpanHandler());
             repositoryWorker = new RepositoryMetricWorker<NetWorkMetric>(ConnectionString,
-                NetWorkMetricsMigration.NameTableMetric);
+                "NetWorkMetric");
         }
         public IList<NetWorkMetric> GetAll()
         {

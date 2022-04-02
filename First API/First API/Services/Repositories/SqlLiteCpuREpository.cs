@@ -17,7 +17,7 @@ namespace First_API.Services.Repositories
         {
             SqlMapper.AddTypeHandler(new TimeSpanHandler());
             repositoryWorker = new RepositoryMetricWorker<CpuMetric>(ConnectionString,
-                CpuMetricsMigration.NameTableMetric);
+                "CpuMetric");
         }
         public IList<CpuMetric> GetAll()
         {

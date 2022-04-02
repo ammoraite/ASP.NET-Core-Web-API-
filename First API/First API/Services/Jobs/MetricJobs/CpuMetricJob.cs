@@ -1,6 +1,8 @@
 ﻿using System;
 using First_API.Controllers.MetricControllers.Base;
+using First_API.DAL.Modules;
 using Quartz;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using First_API.DAL.Modules;
@@ -14,7 +16,9 @@ namespace MetricsAgent.Jobs
         public CpuMetricJob(ICpuMetricRepository repository)
         {
             _repository = repository;
-            _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            _cpuCounter = new PerformanceCounter("Processor",
+                                                 "% Processor Time",
+                                                 "_Total");
         }
         public Task Execute(IJobExecutionContext context)
         {

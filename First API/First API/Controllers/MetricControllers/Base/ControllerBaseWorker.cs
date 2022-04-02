@@ -45,12 +45,19 @@ namespace First_API.Controllers.MetricControllers
             return response;
         }
 
+        internal ResponseAllMetrics GetAllmetricToTime(TimeSpan fromTime, TimeSpan toTime)
         internal ResponseAllMetrics GetAllmetricToTime(TimeSpan fromTime,TimeSpan toTime)
         {
             var response = new ResponseAllMetrics()
             {
                 Metrics = new List<DtoMetric>()
             };
+            foreach (var metric in repository.GetAll())
+            {
+                if (metric.Time <= fromTime || metric.Time >= toTime)
+                {
+                    response.Metrics.Add(mapper.Map<DtoMetric>(metric));
+                }
             foreach (var metric in repository.GetAll())
             {
                 if (metric.Time<= fromTime|| metric.Time>= toTime)
